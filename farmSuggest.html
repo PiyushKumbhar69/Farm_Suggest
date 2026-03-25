@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>FarmSuggest | Smart Farming, Better Future</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f9f0;
+      color: #1e3a2f;
+      line-height: 1.4;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    :root {
+      --primary-green: #2b6e3c;
+      --light-green: #e9f5e9;
+      --dark-green: #1b4d2b;
+      --accent: #f4b942;
+      --card-shadow: 0 8px 20px rgba(0, 32, 0, 0.08);
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    /* Splash Screen */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a4d2a, #2e6e3e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOut 0.8s ease-in-out 2.5s forwards;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; visibility: visible; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+    .splash-content {
+      text-align: center;
+      animation: pulse 1.5s ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .splash-content i {
+      font-size: 5rem;
+      color: #f4b942;
+      margin-bottom: 1rem;
+    }
+    .splash-content h1 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    .splash-content p {
+      font-size: 1.2rem;
+      color: #e9f5e9;
+      font-style: italic;
+    }
+    /* Welcome Page */
+    .welcome-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+      padding: 1.5rem;
+    }
+    .welcome-card {
+      background: white;
+      border-radius: 48px;
+      padding: 2.5rem 2rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+    .welcome-card h1 {
+      color: var(--primary-green);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .welcome-card .slogan {
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    .input-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+    .input-group label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.4rem;
+      color: #2c5e2c;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 60px;
+      border: 1px solid #cce0cc;
+      font-size: 1rem;
+      background: #fefef7;
+    }
+    .error-msg {
+      color: #d32f2f;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .login-btn {
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 0.9rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: 0.2s;
+    }
+    .login-btn:hover {
+      background: var(--dark-green);
+    }
+    /* Dashboard App */
+    .dashboard-app {
+      display: none;
+    }
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 0.8rem 0;
+      gap: 1rem;
+    }
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo i {
+      font-size: 2rem;
+      color: var(--primary-green);
+    }
+    .slogan-mini {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .lang-selector {
+      background: var(--light-green);
+      border: 1px solid #c0e0c0;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .profile-area {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--light-green);
+      padding: 0.4rem 1rem 0.4rem 0.8rem;
+      border-radius: 60px;
+      cursor: pointer;
+      position: relative;
+    }
+    .profile-pic {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .profile-info {
+      text-align: right;
+    }
+    .farmer-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .farmer-location {
+      font-size: 0.7rem;
+      color: #4b6b4b;
+    }
+    .profile-dropdown {
+      position: absolute;
+      top: 55px;
+      right: 0;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      width: 280px;
+      z-index: 200;
+      display: none;
+      overflow: hidden;
+    }
+    .profile-dropdown.show {
+      display: block;
+    }
+    .dropdown-item {
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .dropdown-item:hover {
+      background: #f0f7f0;
+    }
+    .profile-detail {
+      padding: 0.9rem 1.2rem;
+      background: #f9fff7;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    /* Announcement Slider */
+    .announcement-slider {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-left: 6px solid var(--accent);
+      border-radius: 20px;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--card-shadow);
+    }
+    .slider-container {
+      display: flex;
+      animation: slideNews 20s linear infinite;
+      white-space: nowrap;
+    }
+    .slider-container span {
+      display: inline-block;
+      padding: 0 2rem;
+      font-weight: 500;
+    }
+    @keyframes slideNews {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .slider-container:hover {
+      animation-play-state: paused;
+    }
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .service-tile {
+      background: white;
+      border-radius: 28px;
+      padding: 1.4rem 0.8rem;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e2f0e2;
+    }
+    .service-tile:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary-green);
+    }
+    .service-tile i {
+      font-size: 2.5rem;
+      color: var(--primary-green);
+      margin-bottom: 0.7rem;
+    }
+    .service-tile h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    /* Portal Pages */
+    .portal-page {
+      background: white;
+      border-radius: 36px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      box-shadow: var(--card-shadow);
+      animation: fadeIn 0.25s ease;
+      width: 100%;
+      max-width: 100%;
+    }
+    .portal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e0f0e0;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .back-btn {
+      background: #eef3ee;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .scheme-card {
+      background: #f9fff7;
+      border-radius: 24px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--primary-green);
+    }
+    .scheme-card a {
+      color: var(--primary-green);
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .doc-list {
+      margin-top: 0.5rem;
+      padding-left: 1.2rem;
+      font-size: 0.85rem;
+      color: #4a674a;
+    }
+    .weather-card {
+      background: linear-gradient(135deg, #e3f2e3, #c8e6c9);
+      border-radius: 28px;
+      padding: 1.5rem;
+    }
+    .crop-table {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fefef7;
+      border-radius: 20px;
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: var(--light-green);
+      color: var(--dark-green);
+    }
+    .fertilizer-recommend {
+      background: #eef3ea;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    .fert-list {
+      margin-top: 1rem;
+    }
+    .fert-item {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-left: 4px solid var(--primary-green);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .fert-item h4 {
+      color: var(--primary-green);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .fert-details {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .price-tag {
+      background: var(--accent);
+      color: #2c3e2c;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+    .market-card {
+      background: #f9fff7;
+      border-radius: 20px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e0e8e0;
+    }
+    .market-card:hover {
+      background: var(--light-green);
+      transform: translateY(-3px);
+      border-color: var(--primary-green);
+      box-shadow: var(--card-shadow);
+    }
+    .market-card h3 {
+      color: var(--primary-green);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .market-card p {
+      font-size: 0.85rem;
+      color: #4b6b4b;
+      margin: 0.3rem 0;
+    }
+    .price-detail {
+      background: #eef3ea;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      display: none;
+      border-left: 4px solid var(--accent);
+    }
+    .price-detail.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .price-table {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .price-table tr td {
+      padding: 0.8rem;
+      border-bottom: 1px solid #c8e0c8;
+    }
+    .location-badge {
+      background: var(--primary-green);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      display: inline-block;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .hidden {
+      display: none;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #e1f3e1;
+      margin-top: 2rem;
+      border-radius: 32px 32px 0 0;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+      .nav-flex {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-right {
+        justify-content: space-between;
+      }
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .portal-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      .market-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-content">
+    <i class="fas fa-tractor"></i>
+    <h1>FarmSuggest</h1>
+    <p>Smart Farming, Better Future.</p>
+  </div>
+</div>
+
+<!-- WELCOME PAGE (LOGIN) -->
+<div id="welcomePage" class="welcome-page" style="display: none;">
+  <div class="welcome-card">
+    <h1><i class="fas fa-tractor"></i> FarmSuggest</h1>
+    <div class="slogan">Smart Farming, Better Future.</div>
+    <form id="welcomeForm">
+      <div class="input-group">
+        <label><i class="fas fa-user"></i> Farmer Name / शेतकरी नाव / किसान का नाम</label>
+        <input type="text" id="farmerName" placeholder="e.g., Suresh Patil" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-map-marker-alt"></i> District / जिल्हा / जिला</label>
+        <input type="text" id="farmerLocation" placeholder="e.g., Pune, Maharashtra" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-mobile-alt"></i> Mobile Number (10 digits)</label>
+        <input type="tel" id="farmerMobile" maxlength="10" placeholder="9876543210" required>
+        <div id="mobileError" class="error-msg">❌ Please enter valid 10-digit mobile number</div>
+      </div>
+      <button type="submit" class="login-btn">🚜 Start Farming Journey</button>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD APP -->
+<div id="dashboardApp" class="dashboard-app">
+  <div class="navbar">
+    <div class="container nav-flex">
+      <div class="logo">
+        <h1><i class="fas fa-tractor"></i> FarmSuggest</h1>
+        <div class="slogan-mini">Smart Farming, Better Future.</div>
+      </div>
+      <div class="nav-right">
+        <select id="topLanguageSwitcher" class="lang-selector">
+          <option value="en">🇬🇧 English</option>
+          <option value="hi">🇮🇳 हिंदी</option>
+          <option value="mr">🇮🇳 मराठी</option>
+        </select>
+        <div class="profile-area" id="profileTrigger">
+          <div class="profile-pic" id="profilePicInitial">👨‍🌾</div>
+          <div class="profile-info">
+            <div class="farmer-name" id="displayFarmerName">Loading...</div>
+            <div class="farmer-location" id="displayFarmerLocation">📍 --</div>
+          </div>
+          <div id="profileDropdown" class="profile-dropdown">
+            <div class="profile-detail" id="profileDetails"></div>
+            <div class="dropdown-item" id="logoutItem"><i class="fas fa-sign-out-alt"></i> <span id="logoutText">Logout</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Announcement Slider with Latest News -->
+    <div class="announcement-slider">
+      <div class="slider-container" id="newsSlider"></div>
+    </div>
+
+    <div id="dashboardHome">
+      <div class="services-grid" id="servicesGrid">
+        <div class="service-tile" data-portal="schemes"><i class="fas fa-file-alt"></i><h3 id="schemesTitle">Govt Schemes</h3></div>
+        <div class="service-tile" data-portal="weather"><i class="fas fa-cloud-sun-rain"></i><h3 id="weatherTitle">Weather Forecast</h3></div>
+        <div class="service-tile" data-portal="crop"><i class="fas fa-seedling"></i><h3 id="cropTitle">Crop Suggestion</h3></div>
+        <div class="service-tile" data-portal="fertilizer"><i class="fas fa-flask"></i><h3 id="fertilizerTitle">Fertilizer Guide</h3></div>
+        <div class="service-tile" data-portal="market"><i class="fas fa-chart-line"></i><h3 id="marketTitle">Market Prices</h3></div>
+        <div class="service-tile" data-portal="multilang"><i class="fas fa-language"></i><h3 id="langTitle">Multi-language</h3></div>
+      </div>
+    </div>
+    <div id="portalContainer"></div>
+  </div>
+  <footer>
+    <p>🌿 FarmSuggest – Empowering Indian Farmers | Kisan Call Centre: 1800-180-1551</p>
+  </footer>
+</div>
+
+<script>
+  let currentFarmer = { name: "", location: "", mobile: "", lat: null, lng: null };
+  let currentLang = "en";
+
+  const newsItems = [
+    "📢 PM-KISAN 18th installment to be released next week - ₹2000 crore for 9.5 crore farmers",
+    "🌾 MSP for Rabi crops increased: Wheat ₹2425/qtl, Mustard ₹5950/qtl",
+    "🌧️ IMD predicts above-normal monsoon 2026 - Prepare for timely sowing",
+    "💧 PMKSY offers 60% subsidy on micro-irrigation systems - Apply now",
+    "🛡️ PM Fasal Bima Yojana enrollment open for Kharif season - Deadline May 31",
+    "🌱 Free soil health card campaign across villages - Get your soil tested"
+  ];
+
+  // Enhanced Market Database with Pune local markets
+  const marketDatabase = {
+    "pune": [
+      { name: "Pune APMC Market", address: "Gultekdi, Market Yard, Pune - 411037", phone: "020-24252345", distance: "3.5 km", crops: { wheat: 2250, onion: 1850, tomato: 1650, soybean: 4450, groundnut: 5650, brinjal: 1450, cauliflower: 1250 } },
+      { name: "Alandi Mandi", address: "Alandi Devachi, Pune District - 412105", phone: "020-24351234", distance: "15 km", crops: { onion: 1820, tomato: 1620, brinjal: 1420, coriander: 1850, spinach: 950, fenugreek: 850 } },
+      { name: "Shivajinagar Market", address: "Shivajinagar, Pune - 411005", phone: "020-25531234", distance: "2.8 km", crops: { vegetables: "Daily Rates", fruits: "Seasonal", flowers: "Market Rates" } },
+      { name: "Hadapsar Mandi", address: "Hadapsar Industrial Estate, Pune - 411028", phone: "020-26871234", distance: "6.2 km", crops: { tomato: 1680, potato: 1250, onion: 1880, cabbage: 1150, capsicum: 2250 } },
+      { name: "Baramati APMC", address: "Baramati, Pune District - 413102", phone: "02112-254567", distance: "45 km", crops: { sugarcane: 362, onion: 1850, jowar: 2150, groundnut: 5620, soybean: 4420 } },
+      { name: "Saswad Market", address: "Saswad, Pune District - 412301", phone: "02115-245678", distance: "28 km", crops: { jowar: 2120, bajra: 1980, gram: 5250, wheat: 2230 } }
+    ],
+    "maharashtra": [
+      { name: "Pune APMC Market", address: "Gultekdi, Market Yard, Pune - 411037", phone: "020-24252345", distance: "3.5 km", crops: { wheat: 2250, onion: 1850, tomato: 1650, soybean: 4450 } },
+      { name: "Nagpur Mandi", address: "Kalamna Market, Nagpur - 440033", phone: "0712-2641234", distance: "4.2 km", crops: { cotton: 6350, orange: 2850, soybean: 4420 } },
+      { name: "Solapur Mandi", address: "Market Yard, Solapur - 413001", phone: "0217-2723456", distance: "2.8 km", crops: { cotton: 6320, jowar: 2150, groundnut: 5650 } },
+      { name: "Nashik APMC", address: "Mumbai Agra Road, Nashik - 422001", phone: "0253-2512345", distance: "3.0 km", crops: { onion: 1920, grapes: 3450, tomato: 1680 } }
+    ],
+    "default": [
+      { name: "Azadpur Mandi", address: "Azadpur, Delhi - 110033", phone: "011-27673955", distance: "Varies", crops: { wheat: 2260, paddy: 2150, onion: 1850 } },
+      { name: "Vashi APMC", address: "Sector 19, Vashi, Navi Mumbai - 400705", phone: "022-27893456", distance: "Varies", crops: { wheat: 2270, onion: 1880, tomato: 1720 } }
+    ]
+  };
+
+  // Enhanced Fertilizer Database with Pricing Details
+  const fertilizerDatabase = [
+    { name: "Urea (46% N)", type: "Nitrogen Fertilizer", application: "Basal & Top Dressing", dosage: "50-120 kg/acre", price: "₹280-320 per 50kg bag", description: "Promotes vegetative growth, leaf development" },
+    { name: "DAP (Diammonium Phosphate)", type: "NPK Fertilizer (18:46:0)", application: "Basal Application", dosage: "50-100 kg/acre", price: "₹1350-1450 per 50kg bag", description: "Phosphorus for root development, flowering" },
+    { name: "MOP (Muriate of Potash)", type: "Potash Fertilizer (60% K2O)", application: "Basal & Top Dressing", dosage: "30-60 kg/acre", price: "₹1650-1800 per 50kg bag", description: "Improves disease resistance, grain quality" },
+    { name: "NPK 19:19:19", type: "Balanced NPK Fertilizer", application: "Foliar/Soil Application", dosage: "40-80 kg/acre", price: "₹1400-1550 per 50kg bag", description: "Complete nutrition for all crops" },
+    { name: "Zinc Sulphate (21%)", type: "Micronutrient", application: "Basal/Foliar", dosage: "15-25 kg/acre", price: "₹550-650 per 25kg bag", description: "Prevents zinc deficiency, improves grain filling" },
+    { name: "Gypsum (Calcium Sulphate)", type: "Soil Amendment", application: "Basal Application", dosage: "150-250 kg/acre", price: "₹300-400 per 50kg bag", description: "Improves soil structure, provides calcium" },
+    { name: "Boron 10%", type: "Micronutrient", application: "Foliar/Soil", dosage: "1-2 kg/acre", price: "₹180-220 per kg", description: "Essential for flowering, fruit setting" },
+    { name: "Ferrous Sulphate", type: "Iron Supplement", application: "Soil/Foliar", dosage: "20-30 kg/acre", price: "₹120-150 per kg", description: "Prevents iron chlorosis" },
+    { name: "Vermicompost", type: "Organic Manure", application: "Basal", dosage: "2-5 tons/acre", price: "₹5-8 per kg", description: "Improves soil health, water retention" },
+    { name: "Neem Cake", type: "Organic Fertilizer", application: "Basal", dosage: "100-150 kg/acre", price: "₹25-35 per kg", description: "Natural pest repellent, slow nitrogen release" }
+  ];
+
+  // Crop Database
+  const cropDatabase = [
+    { nameEn: "Wheat", nameHi: "गेहूं", nameMr: "गहू", season: "Rabi (Oct-Mar)", soil: ["Loamy", "Clayey"], price: "₹2250-2350/qtl", water: "450-650 mm" },
+    { nameEn: "Rice (Paddy)", nameHi: "धान", nameMr: "भात", season: "Kharif (Jun-Oct)", soil: ["Clayey", "Alluvial"], price: "₹2100-2250/qtl", water: "1000-1500 mm" },
+    { nameEn: "Cotton", nameHi: "कपास", nameMr: "कापूस", season: "Kharif (May-Jun)", soil: ["Black"], price: "₹6200-6800/qtl", water: "600-1000 mm" },
+    { nameEn: "Sugarcane", nameHi: "गन्ना", nameMr: "ऊस", season: "Annual", soil: ["Black", "Loamy"], price: "₹350-380/qtl", water: "1500-2500 mm" },
+    { nameEn: "Groundnut", nameHi: "मूंगफली", nameMr: "शेंगदाणा", season: "Kharif", soil: ["Red", "Sandy"], price: "₹5500-6000/qtl", water: "500-700 mm" },
+    { nameEn: "Soybean", nameHi: "सोयाबीन", nameMr: "सोयाबीन", season: "Kharif", soil: ["Black"], price: "₹4400-4800/qtl", water: "600-800 mm" },
+    { nameEn: "Maize", nameHi: "मक्का", nameMr: "मका", season: "Kharif/Rabi", soil: ["Loamy", "Red"], price: "₹2200-2400/qtl", water: "500-800 mm" },
+    { nameEn: "Jowar (Sorghum)", nameHi: "ज्वार", nameMr: "ज्वारी", season: "Kharif/Rabi", soil: ["Black", "Red"], price: "₹2100-2250/qtl", water: "400-600 mm" },
+    { nameEn: "Onion", nameHi: "प्याज", nameMr: "कांदा", season: "Rabi/Kharif", soil: ["Loamy", "Red"], price: "₹1850-2250/qtl", water: "500-700 mm" }
+  ];
+
+  const translations = {
+    en: {
+      schemesTitle: "Govt Schemes", weatherTitle: "Weather Forecast", cropTitle: "Crop Suggestion",
+      fertilizerTitle: "Fertilizer Guide", marketTitle: "Market Prices", langTitle: "Multi-language",
+      back: "Back", schemesPortal: "Government Schemes for Farmers", weatherPortal: "Weather Forecast",
+      cropPortal: "Complete Crop Guide", fertilizerPortal: "Fertilizer Guide - Prices & Recommendations",
+      marketPortal: "Nearby Markets & Prices", langPortal: "Language Settings",
+      soilSelect: "Select Your Soil Type", getCropBtn: "Get Crop Recommendations",
+      recommendedCrops: "Recommended Crops for Your Soil", fertilizerRec: "Fertilizer Recommendations",
+      selectCrop: "Select Crop", getFertBtn: "Get Fertilizer Recommendations", logout: "Logout",
+      nearbyMarkets: "📍 Nearby Markets Based on Your Location", clickMarket: "Click on any market to view detailed prices and address",
+      allFertilizers: "All Fertilizers with Prices", recommendedFertilizers: "Recommended Fertilizers for Your Crop"
+    },
+    hi: {
+      schemesTitle: "सरकारी योजनाएँ", weatherTitle: "मौसम पूर्वानुमान", cropTitle: "फसल सुझाव",
+      fertilizerTitle: "उर्वरक गाइड - मूल्य सहित", marketTitle: "मंडी भाव", langTitle: "बहुभाषी",
+      back: "वापस", schemesPortal: "किसानों के लिए सरकारी योजनाएँ", weatherPortal: "मौसम पूर्वानुमान",
+      cropPortal: "संपूर्ण फसल गाइड", fertilizerPortal: "उर्वरक गाइड - मूल्य एवं सिफारिशें", marketPortal: "नजदीकी मंडियाँ और भाव",
+      langPortal: "भाषा सेटिंग्स", soilSelect: "अपनी मिट्टी का प्रकार चुनें", getCropBtn: "फसल सुझाव प्राप्त करें",
+      recommendedCrops: "आपकी मिट्टी के लिए अनुशंसित फसलें", fertilizerRec: "उर्वरक अनुशंसाएँ",
+      selectCrop: "फसल चुनें", getFertBtn: "उर्वरक अनुशंसाएँ प्राप्त करें", logout: "लॉगआउट",
+      nearbyMarkets: "📍 आपके स्थान के नजदीकी मंडियाँ", clickMarket: "विस्तृत कीमतें और पता देखने के लिए मंडी पर क्लिक करें",
+      allFertilizers: "सभी उर्वरक मूल्य सहित", recommendedFertilizers: "आपकी फसल के लिए अनुशंसित उर्वरक"
+    },
+    mr: {
+      schemesTitle: "सरकारी योजना", weatherTitle: "हवामान अंदाज", cropTitle: "पीक सूचना",
+      fertilizerTitle: "खत मार्गदर्शक - किंमतीसह", marketTitle: "बाजारभाव", langTitle: "बहुभाषिक",
+      back: "मागे", schemesPortal: "शेतकऱ्यांसाठी सरकारी योजना", weatherPortal: "हवामान अंदाज",
+      cropPortal: "संपूर्ण पीक मार्गदर्शक", fertilizerPortal: "खत मार्गदर्शक - किंमती व शिफारसी", marketPortal: "जवळची मंडी आणि भाव",
+      langPortal: "भाषा सेटिंग्ज", soilSelect: "आपली मातीचा प्रकार निवडा", getCropBtn: "पीक शिफारस मिळवा",
+      recommendedCrops: "आपल्या मातीसाठी शिफारस केलेली पिके", fertilizerRec: "खत शिफारसी",
+      selectCrop: "पीक निवडा", getFertBtn: "खत शिफारसी मिळवा", logout: "लॉगआउट",
+      nearbyMarkets: "📍 आपल्या स्थानाजवळील मंडी", clickMarket: "तपशीलवार किंमती आणि पत्ता पाहण्यासाठी मंडीवर क्लिक करा",
+      allFertilizers: "सर्व खते किंमतीसह", recommendedFertilizers: "आपल्या पिकासाठी शिफारस केलेली खते"
+    }
+  };
+
+  function t(key) { return translations[currentLang][key] || translations.en[key] || key; }
+
+  function updateUILanguage() {
+    document.getElementById("schemesTitle").innerText = t("schemesTitle");
+    document.getElementById("weatherTitle").innerText = t("weatherTitle");
+    document.getElementById("cropTitle").innerText = t("cropTitle");
+    document.getElementById("fertilizerTitle").innerText = t("fertilizerTitle");
+    document.getElementById("marketTitle").innerText = t("marketTitle");
+    document.getElementById("langTitle").innerText = t("langTitle");
+    document.getElementById("logoutText").innerText = t("logout");
+    updateProfileDetails();
+  }
+
+  function updateProfileDetails() {
+    const detailsHtml = `
+      <div style="font-weight:700;margin-bottom:5px;"><i class="fas fa-user"></i> ${currentFarmer.name}</div>
+      <div style="font-size:0.85rem;color:#4b6b4b;"><i class="fas fa-map-marker-alt"></i> ${currentFarmer.location}</div>
+      <div style="font-size:0.85rem;color:#4b6b4b;"><i class="fas fa-mobile-alt"></i> ${currentFarmer.mobile}</div>
+    `;
+    document.getElementById("profileDetails").innerHTML = detailsHtml;
+  }
+
+  function getMarketsByLocation() {
+    const locLower = (currentFarmer.location || "").toLowerCase();
+    if (locLower.includes("pune")) return marketDatabase["pune"];
+    for (let key in marketDatabase) {
+      if (key !== "default" && locLower.includes(key)) return marketDatabase[key];
+    }
+    return marketDatabase["default"];
+  }
+
+  async function getWeatherData() {
+    return new Promise((resolve) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            try {
+              const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability&timezone=auto`);
+              const data = await response.json();
+              const current = data.current_weather;
+              let condition = "Clear";
+              const code = current.weathercode;
+              if (code === 1 || code === 2) condition = "Partly Cloudy";
+              else if (code === 3) condition = "Cloudy";
+              else if (code >= 45 && code <= 48) condition = "Foggy";
+              else if (code >= 51 && code <= 67) condition = "Drizzle/Rain";
+              else if (code >= 71 && code <= 77) condition = "Snow";
+              else if (code >= 80 && code <= 99) condition = "Rain/Thunderstorm";
+              resolve({
+                location: `${pos.coords.latitude.toFixed(2)}°N, ${pos.coords.longitude.toFixed(2)}°E`,
+                temp: `${current.temperature}°C`,
+                condition,
+                maxTemp: data.daily?.temperature_2m_max?.[0] || "N/A",
+                minTemp: data.daily?.temperature_2m_min?.[0] || "N/A",
+                rainProb: data.daily?.precipitation_probability?.[0] || "10"
+              });
+            } catch { resolve({ location: currentFarmer.location, temp: "28°C", condition: "Sunny", maxTemp: "32°C", minTemp: "22°C", rainProb: "15" }); }
+          },
+          () => resolve({ location: currentFarmer.location, temp: "29°C", condition: "Clear Sky", maxTemp: "33°C", minTemp: "23°C", rainProb: "20" })
+        );
+      } else resolve({ location: currentFarmer.location, temp: "27°C", condition: "Humid", maxTemp: "31°C", minTemp: "24°C", rainProb: "25" });
+    });
+  }
+
+  function getCropName(crop) {
+    if (currentLang === "hi") return crop.nameHi;
+    if (currentLang === "mr") return crop.nameMr;
+    return crop.nameEn;
+  }
+
+  async function showPortal(portalId) {
+    const dashboardDiv = document.getElementById("dashboardHome");
+    const portalContainer = document.getElementById("portalContainer");
+    dashboardDiv.classList.add("hidden");
+    portalContainer.classList.remove("hidden");
+    portalContainer.innerHTML = "";
+
+    let html = `<div class="portal-page"><div class="portal-header"><h2>${t(portalId + "Portal") || portalId}</h2><button class="back-btn" id="backBtn">← ${t("back")}</button></div><div class="portal-content">`;
+
+    if (portalId === "schemes") {
+      const schemeNames = {
+        en: { pmkisan: "🌾 PM-KISAN", kcc: "💳 Kisan Credit Card", pmfby: "🛡️ PM Fasal Bima", pmksy: "💧 PMKSY" },
+        hi: { pmkisan: "🌾 पीएम-किसान", kcc: "💳 किसान क्रेडिट कार्ड", pmfby: "🛡️ पीएम फसल बीमा", pmksy: "💧 पीएमकेवाय" },
+        mr: { pmkisan: "🌾 पीएम-किसान", kcc: "💳 किसान क्रेडिट कार्ड", pmfby: "🛡️ पीएम फसल विमा", pmksy: "💧 पीएमकेवाय" }
+      };
+      const s = schemeNames[currentLang] || schemeNames.en;
+      html += `
+        <div class="scheme-card"><a href="https://pmkisan.gov.in/" target="_blank">${s.pmkisan}</a><div class="doc-list">📄 Documents: Land papers, Aadhaar, Bank account. ₹6000/year.</div></div>
+        <div class="scheme-card"><a href="https://www.kcc.nabard.org/" target="_blank">${s.kcc}</a><div class="doc-list">📄 Documents: Land records, identity proof, crop plan. Credit up to ₹3 lakh.</div></div>
+        <div class="scheme-card"><a href="https://pmfby.gov.in/" target="_blank">${s.pmfby}</a><div class="doc-list">📄 Documents: Land records, bank account. Premium 1.5-2%.</div></div>
+        <div class="scheme-card"><a href="https://pmksy.gov.in/" target="_blank">${s.pmksy}</a><div class="doc-list">📄 Documents: Land ownership, project estimate. 60% subsidy.</div></div>`;
+    }
+    else if (portalId === "weather") {
+      const w = await getWeatherData();
+      html += `<div class="weather-card"><i class="fas fa-map-marker-alt"></i> <strong>📍 ${w.location}</strong><br><i class="fas fa-thermometer-half"></i> Current: ${w.temp} | Max: ${w.maxTemp} | Min: ${w.minTemp}<br><i class="fas fa-cloud"></i> Condition: ${w.condition}<br><i class="fas fa-tint"></i> Rain Probability: ${w.rainProb}%</div>`;
+    }
+    else if (portalId === "crop") {
+      html += `<div class="fertilizer-recommend"><label><strong>${t("soilSelect")}:</strong></label>
+        <select id="soilTypeCrop" style="width:100%;padding:0.8rem;border-radius:40px;margin:0.8rem 0;">
+          <option value="Loamy">Loamy (दोमट)</option><option value="Black">Black (काळी/काली)</option>
+          <option value="Clayey">Clayey (चिकणी/चिकनी)</option><option value="Red">Red (लाल)</option>
+          <option value="Sandy">Sandy (वालुवा/बलुई)</option>
+        </select><button id="getCropBtn" class="back-btn" style="background:var(--primary-green);color:white;">${t("getCropBtn")}</button>
+        <div id="cropResult" style="margin-top:1rem;"></div></div>`;
+    }
+    else if (portalId === "fertilizer") {
+      html += `<div><h3>📋 ${t("allFertilizers")}</h3><div class="fert-list">`;
+      fertilizerDatabase.forEach(fert => {
+        html += `<div class="fert-item">
+          <h4><i class="fas fa-flask"></i> ${fert.name}</h4>
+          <p><strong>Type:</strong> ${fert.type}</p>
+          <p><strong>Application:</strong> ${fert.application}</p>
+          <p><strong>Dosage:</strong> ${fert.dosage}</p>
+          <div class="fert-details"><span><strong>💰 Price:</strong> ${fert.price}</span><span class="price-tag">${fert.description}</span></div>
+        </div>`;
+      });
+      html += `</div><div style="margin-top:2rem;"><h3>🌾 ${t("recommendedFertilizers")}</h3>
+        <select id="cropForFert" style="width:100%;padding:0.8rem;border-radius:40px;margin:0.8rem 0;">
+          ${cropDatabase.map(c => `<option value="${c.nameEn}">${getCropName(c)}</option>`).join('')}
+        </select>
+        <button id="getCropFertBtn" class="back-btn" style="background:var(--primary-green);color:white;">${t("getFertBtn")}</button>
+        <div id="cropFertResult" style="margin-top:1rem;"></div></div></div>`;
+    }
+    else if (portalId === "market") {
+      const markets = getMarketsByLocation();
+      html += `<h3>${t("nearbyMarkets")}</h3>
+        <p class="small-note">${t("clickMarket")}</p>
+        <div class="market-grid" id="marketGrid">`;
+      markets.forEach((market, index) => {
+        html += `<div class="market-card" data-market-index="${index}">
+          <i class="fas fa-warehouse" style="font-size:1.8rem;color:var(--primary-green);"></i>
+          <h3>${market.name}</h3>
+          <p><i class="fas fa-map-pin"></i> ${market.address}</p>
+          <p><i class="fas fa-phone"></i> ${market.phone}</p>
+          <p><i class="fas fa-road"></i> Distance: ${market.distance}</p>
+          <small style="color:var(--accent);">📊 Click for detailed prices</small>
+        </div>`;
+      });
+      html += `</div><div id="priceDetails"></div>`;
+    }
+    else if (portalId === "multilang") {
+      html += `<div><p>🌐 Select language from top-right corner. All content available in English, हिंदी, मराठी.</p><p>✅ Currently active: ${currentLang === "en" ? "English" : currentLang === "hi" ? "हिंदी" : "मराठी"}</p></div>`;
+    }
+    html += `</div></div>`;
+    portalContainer.innerHTML = html;
+    document.getElementById("backBtn").addEventListener("click", () => {
+      portalContainer.classList.add("hidden");
+      dashboardDiv.classList.remove("hidden");
+    });
+
+    if (portalId === "crop") {
+      document.getElementById("getCropBtn").addEventListener("click", () => {
+        const soil = document.getElementById("soilTypeCrop").value;
+        const suitable = cropDatabase.filter(c => c.soil.includes(soil.split(" ")[0]));
+        let result = `<strong>${t("recommendedCrops")} (${soil}):</strong><div class="crop-table"><table><thead><tr><th>Crop</th><th>Season</th><th>Price</th><th>Water</th></tr></thead><tbody>`;
+        suitable.forEach(c => result += `<tr><td>${getCropName(c)}</td><td>${c.season}</td><td>${c.price}</td><td>${c.water}</td></tr>`);
+        result += `</tbody></table></div>`;
+        document.getElementById("cropResult").innerHTML = result;
+      });
+    }
+    if (portalId === "fertilizer") {
+      document.getElementById("getCropFertBtn").addEventListener("click", () => {
+        const crop = document.getElementById("cropForFert").value;
+        let recommendations = "";
+        if (crop === "Wheat") recommendations = "Urea, DAP, MOP, Zinc Sulphate";
+        else if (crop === "Rice (Paddy)") recommendations = "Urea, DAP, Zinc Sulphate, NPK 19:19:19";
+        else if (crop === "Cotton") recommendations = "Urea, DAP, MOP, Boron, Gypsum";
+        else if (crop === "Sugarcane") recommendations = "Urea, DAP, MOP, Vermicompost, Neem Cake";
+        else if (crop === "Groundnut") recommendations = "Gypsum, SSP, MOP, Rhizobium";
+        else recommendations = "NPK 19:19:19, Urea, DAP, Vermicompost";
+        
+        let result = `<strong>🌱 Recommended Fertilizers for ${crop}:</strong><div class="fert-list">`;
+        const recFerts = fertilizerDatabase.filter(f => recommendations.includes(f.name.split(" ")[0]) || recommendations.includes(f.name));
+        recFerts.forEach(fert => {
+          result += `<div class="fert-item"><h4>${fert.name}</h4><p>💰 ${fert.price} | Dosage: ${fert.dosage}</p><p>${fert.description}</p></div>`;
+        });
+        result += `</div>`;
+        document.getElementById("cropFertResult").innerHTML = result;
+      });
+    }
+    if (portalId === "market") {
+      const markets = getMarketsByLocation();
+      document.querySelectorAll(".market-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const index = card.getAttribute("data-market-index");
+          const market = markets[index];
+          let priceHtml = `<div class="price-detail show"><h3><i class="fas fa-store"></i> ${market.name}</h3>
+            <p><i class="fas fa-location-dot"></i> <strong>Address:</strong> ${market.address}</p>
+            <p><i class="fas fa-phone-alt"></i> <strong>Contact:</strong> ${market.phone}</p>
+            <p><i class="fas fa-road"></i> <strong>Distance:</strong> ${market.distance}</p>
+            <h4 style="margin-top:1rem;"><i class="fas fa-rupee-sign"></i> Today's Market Prices</h4>
+            <table class="price-table"><tbody>`;
+          for (let [crop, price] of Object.entries(market.crops)) {
+            priceHtml += `<tr><td><strong>${crop.toUpperCase()}</strong></td><td>₹${price}/quintal</td></tr>`;
+          }
+          priceHtml += `</tbody></table><div class="small-note" style="margin-top:1rem;">📊 Prices as per today's mandi rates | Last updated: ${new Date().toLocaleDateString()}</div></div>`;
+          document.getElementById("priceDetails").innerHTML = priceHtml;
+        });
+      });
+    }
+  }
+
+  setTimeout(() => {
+    document.getElementById("splashScreen").style.display = "none";
+    document.getElementById("welcomePage").style.display = "flex";
+  }, 2800);
+
+  document.getElementById("welcomeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mobile = document.getElementById("farmerMobile").value.trim();
+    if (!/^[0-9]{10}$/.test(mobile)) {
+      document.getElementById("mobileError").style.display = "block";
+      return;
+    }
+    document.getElementById("mobileError").style.display = "none";
+    currentFarmer = {
+      name: document.getElementById("farmerName").value.trim(),
+      location: document.getElementById("farmerLocation").value.trim(),
+      mobile: mobile
+    };
+    document.getElementById("welcomePage").style.display = "none";
+    document.getElementById("dashboardApp").style.display = "block";
+    document.getElementById("displayFarmerName").innerText = currentFarmer.name;
+    document.getElementById("displayFarmerLocation").innerHTML = `📍 ${currentFarmer.location}`;
+    document.getElementById("profilePicInitial").innerHTML = currentFarmer.name.charAt(0).toUpperCase();
+    updateProfileDetails();
+    updateUILanguage();
+
+    const slider = document.getElementById("newsSlider");
+    slider.innerHTML = newsItems.map(item => `<span>${item}</span>`).join('') + newsItems.map(item => `<span>${item}</span>`).join('');
+  });
+
+  const profileTrigger = document.getElementById("profileTrigger");
+  const dropdown = document.getElementById("profileDropdown");
+  profileTrigger.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("show"); });
+  document.addEventListener("click", () => dropdown.classList.remove("show"));
+  document.getElementById("logoutItem").addEventListener("click", () => {
+    document.getElementById("dashboardApp").style.display = "none";
+    document.getElementById("welcomePage").style.display = "flex";
+    dropdown.classList.remove("show");
+    document.getElementById("welcomeForm").reset();
+  });
+
+  document.getElementById("topLanguageSwitcher").addEventListener("change", (e) => {
+    currentLang = e.target.value;
+    updateUILanguage();
+  });
+
+  document.querySelectorAll(".service-tile").forEach(tile => {
+    tile.addEventListener("click", () => showPortal(tile.getAttribute("data-portal")));
+  });
+</script>
+</body>
+</html>
